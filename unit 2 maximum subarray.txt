@@ -1,0 +1,47 @@
+class Solution {
+    public int maxSubArray(int[] nums) {
+        return divideAndConquer(nums, 0, nums.length - 1);
+    }
+
+    private int divideAndConquer(int[] nums, int left, int right) {
+        // Base case
+        if (left == right) {
+            return nums[left];
+        }
+
+        int mid = left + (right - left) / 2;
+
+        // Maximum subarray entirely in left half
+        int leftSum = divideAndConquer(nums, left, mid);
+
+        // Maximum subarray entirely in right half
+        int rightSum = divideAndConquer(nums, mid + 1, right);
+
+        // Maximum subarray crossing the middle
+        int crossSum = maxCrossingSum(nums, left, mid, right);
+
+        return Math.max(Math.max(leftSum, rightSum), crossSum);
+    }
+
+    private int maxCrossingSum(int[] nums, int left, int mid, int right) {
+        int sum = 0;
+        int leftMax = Integer.MIN_VALUE;
+
+        // Best sum going from mid towards left
+        for (int i = mid; i >= left; i--) {
+            sum += nums[i];
+            leftMax = Math.max(leftMax, sum);
+        }
+
+        sum = 0;
+        int rightMax = Integer.MIN_VALUE;
+
+        // Best sum going from mid+1 towards right
+        for (int i = mid + 1; i <= right; i++) {
+            sum += nums[i];
+            rightMax = Math.max(rightMax, sum);
+        }
+
+        return leftMax + rightMax;
+    }
+}
